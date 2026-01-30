@@ -294,6 +294,9 @@ DEF_SWITCH(ImpellerLazyShaderMode,
 DEF_SWITCH(ImpellerAntialiasLines,
            "impeller-antialias-lines",
            "Experimental flag to test drawing lines with antialiasing.")
+DEF_SWITCH(ForceSimulatorRun,
+           "force-simulator-run",
+           "Force simulator run.")
 DEF_SWITCHES_END
 
 void PrintUsage(const std::string& executable_name);

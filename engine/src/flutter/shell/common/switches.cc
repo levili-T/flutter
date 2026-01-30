@@ -236,6 +236,9 @@ Settings SettingsFromCommandLine(const fml::CommandLine& command_line) {
   settings.enable_vm_service =
       !command_line.HasOption(FlagForSwitch(Switch::DisableVMService));
 
+  settings.bForceSimulatorRun =
+      command_line.HasOption(FlagForSwitch(Switch::ForceSimulatorRun));
+
   // Enable mDNS VM Service Publication
   settings.enable_vm_service_publication = !command_line.HasOption(
       FlagForSwitch(Switch::DisableVMServicePublication));

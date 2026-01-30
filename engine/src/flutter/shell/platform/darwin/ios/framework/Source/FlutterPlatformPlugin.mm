@@ -17,6 +17,8 @@
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterViewController_Internal.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/UIViewController+FlutterScreenAndSceneIfLoaded.h"
 
+#include "third_party/dart/runtime/include/dart_api.h"
+
 FLUTTER_ASSERT_ARC
 
 namespace {
@@ -159,6 +161,10 @@ static void SetStatusBarStyleForSharedApplication(UIStatusBarStyle style) {
   } else if ([method isEqualToString:@"Share.invoke"]) {
     [self showShareViewController:args];
     result(nil);
+  } else if ([method isEqualToString:@"LMCHotPatch.isExcute"]) {
+    bool bExcute = [self isLMCHotPatchExcute];
+    result(@(bExcute));
+  } else {
   } else if ([method isEqualToString:@"ContextMenu.showSystemContextMenu"]) {
     [self showSystemContextMenu:args];
     result(nil);
@@ -447,6 +453,10 @@ static void SetStatusBarStyleForSharedApplication(UIStatusBarStyle style) {
     _textField = [[UITextField alloc] init];
   }
   return _textField;
+}
+
+- (bool)isLMCHotPatchExcute {
+  return Dart_GetHotPatchExcute();
 }
 
 @end
