@@ -164,7 +164,6 @@ static void SetStatusBarStyleForSharedApplication(UIStatusBarStyle style) {
   } else if ([method isEqualToString:@"LMCHotPatch.isExcute"]) {
     bool bExcute = [self isLMCHotPatchExcute];
     result(@(bExcute));
-  } else {
   } else if ([method isEqualToString:@"ContextMenu.showSystemContextMenu"]) {
     [self showSystemContextMenu:args];
     result(nil);

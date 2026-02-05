@@ -2,8 +2,15 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//build/config/darwin/darwin_sdk.gni")
+
 config("sdk") {
   cflags_cc = [ "-stdlib=libc++" ]
+  if (ios_device_sdk_path != "") {
+    cflags = [ "-F" + ios_device_sdk_path + "/System/Library/SubFrameworks" ]
+    cflags_objc = cflags
+    cflags_objcc = cflags
+  }
 }
 
 config("ios_application_extension") {

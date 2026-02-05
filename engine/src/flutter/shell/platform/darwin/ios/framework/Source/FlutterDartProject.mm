@@ -291,9 +291,22 @@ flutter::Settings FLTDefaultSettingsForBundle(NSBundle* bundle, NSProcessInfo* p
   }
 
   // begin work - Load hotpatch if available
-  NSString* hotPatchPath = Lmc_curHotPatchPath(mainBundle);
-  if (hotPatchPath && [[NSFileManager defaultManager] fileExistsAtPath:hotPatchPath]) {
-    Lmc_loadHotPatch([hotPatchPath UTF8String], settings);
+  bool bHotPatch = false;
+
+  NSString* hotPath = Lmc_curHotPatchPath(mainBundle);
+  if (hotPath.length > 0 && [NSFileManager.defaultManager fileExistsAtPath:hotPath]) {
+    bHotPatch = Lmc_loadHotPatch(hotPath.UTF8String, settings);
+  }
+
+  NSNumber* enableForceSimulatorRun =
+      [mainBundle objectForInfoDictionaryKey:@"LmcEnableHotPathExcute"];
+  settings.bForceSimulatorRun = enableForceSimulatorRun.boolValue;
+  NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+  bool bVirtualEnable = [defaults boolForKey:@"flutter.LmcExcuteVirtualMachine"];
+  if (bHotPatch == false && settings.bForceSimulatorRun && bVirtualEnable) {
+    NSString* applicationFrameworkPath =
+        [mainBundle pathForResource:@"Frameworks/App.framework/App" ofType:@""];
+    Lmc_loadHotPatch(applicationFrameworkPath.UTF8String, settings);
   }
   // end work
 
@@ -622,7 +635,7 @@ intptr_t Lmc_func_addr(const mach_header_t* header, const char* funcName) {
   return value;
 }
 
-uint64_t Lmc_get_app_mapping_size(mach_header_t** appBaseAddr) {
+__attribute__((unused)) static uint64_t Lmc_get_app_mapping_size(mach_header_t** appBaseAddr) {
   uint64_t total_size = 0;
   uint32_t count = _dyld_image_count();
   for (uint32_t i = 0; i < count; i++) {
@@ -706,3 +719,4 @@ NSString* Lmc_curHotPatchPath(NSBundle* mainBundle) {
   } while (NO);
 
   return hotPath;
+}
